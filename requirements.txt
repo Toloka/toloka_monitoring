@@ -1,0 +1,8 @@
+flask
+flask-restx
+sqlalchemy
+toloka-kit
+crowd-kit
+pandas
+tabulate
+requests

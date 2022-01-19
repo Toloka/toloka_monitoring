@@ -1,0 +1,62 @@
+<!-- Adapted from https://github.com/statsig-io/statuspage -->
+<html>
+  <head>
+    <title>Monitoring with Toloka</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="static/style.css" />
+      <script src="https://cdn.jsdelivr.net/npm/chart.js@3.6.1/dist/chart.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/moment"></script>
+      <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
+  </head>
+  <body>
+    <div class="pageContainer">
+      <div class="headline">
+        <span>Model metrics</span>
+      </div>
+        <div id="templates" >
+            <div  id="statusLineTemplate" class="statusLine">
+                <canvas id="f1_score_chart" width="400" height="400"></canvas>
+                <script>
+                const DATA_COUNT = 7;
+                const NUMBER_CFG = {count: DATA_COUNT, min: -100, max: 100};
+
+                let labels = {{ metrics['time_created_str']|tojson }};
+
+                const data = {
+                  labels: labels,
+                  datasets: [
+                    {
+                      label: 'F1 score',
+                      data: {{ metrics['f1_score'] }},
+                      borderColor: 'rgb(75, 192, 192)',
+                      tension: 0.1,
+                    },
+                  ]
+                };
+                const config = {
+                  type: 'line',
+                  data: data,
+                    options: {
+                        scales: {
+                            x: [{
+                                type: 'timeseries',
+                            }],
+                        }
+                    },
+                    responsive: true,
+                    plugins: {
+                      title: {
+                        display: true,
+                        text: 'Model metrics'
+                      }
+                    }
+                  };
+
+                const ctx = document.getElementById('f1_score_chart').getContext('2d');
+                const myChart = new Chart(ctx, config);
+                </script>
+            </div>
+        </div>
+    </div>
+  </body>
+</html>
