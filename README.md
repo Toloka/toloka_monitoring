@@ -20,7 +20,7 @@ cp toloka_monitoring/_template_config.py toloka_monitoring/config.py
 TOLOKA_API_TOKEN=<your token>
 ```
 
-2. Run script to setup project in Toloka:
+4. Run script to setup project in Toloka:
 ```
 python toloka_monitoring/setup_toloka_project.py
 ```
@@ -28,7 +28,7 @@ The script will print `TOLOKA_PROJECT_ID` and `TOLOKA_POOL_ID`.
 
 Put them into `toloka_monitoring/config.py`.
 
-3. Start the API and make predictions:
+5. Start the API and make predictions:
 ```
 python toloka_monitoring
 ```
@@ -46,11 +46,11 @@ curl -X 'POST' \
 ```
 
 
-4. With the API running, make example predictions and compute metrics for demo:
+6. With the API running, make example predictions and compute metrics for demo:
 ```
 python make_example_predictions.py
 ```
 
-5. Check metric charts: http://localhost:8000/monitoring
+7. Check metric charts: http://localhost:8000/monitoring
 
-6. (Optinal) Train a better model by running `notebooks/train_models.ipynb`. You will need a GPU.
+8. (Optinal) Train a better model by running `notebooks/train_models.ipynb`. You will need a GPU.
