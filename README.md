@@ -24,9 +24,9 @@ TOLOKA_API_TOKEN=<your token>
 ```
 python toloka_monitoring/setup_toloka_project.py
 ```
-The script will print `TOLOKA_PROJECT_ID` and `TOLOKA_POOL_ID`.
+The script will print `TOLOKA_PROJECT_ID`
 
-Put them into `toloka_monitoring/config.py`.
+Put it into `toloka_monitoring/config.py`.
 
 3. Start the API and make predictions:
 ```
