@@ -3,7 +3,7 @@
 This project demonstrates how to do human-in-the-loop ML model monitoring using Toloka.
 
 ![result preview](preview.png "Result preview")
-
+ 
 # Running the demo project
 
 0. Download model checkpoint:
