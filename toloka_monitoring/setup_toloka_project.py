@@ -4,7 +4,7 @@ import datetime
 import toloka.client as toloka
 import toloka.client.project.template_builder as tb
 from toloka.client.primitives.operators import CompareOperator
-from toloka_monitoring.config import SQLALCHEMY_DATABASE_URI, TOLOKA_API_TOKEN, TOLOKA_POOL_ID
+from toloka_monitoring.config import TOLOKA_API_TOKEN
 
 
 def create_project():
@@ -80,10 +80,10 @@ def create_project():
     return project
 
 
-def create_pool(toloka_client, project):
+def create_pool(toloka_client, project_id):
     global_skill = toloka_client.get_skill("25627")
     pool = toloka.Pool(
-        project_id=project.id,
+        project_id=project_id,
         private_name='Monitoring pool',
         may_contain_adult_content=False,
         reward_per_assignment=0.01,
@@ -102,6 +102,7 @@ def create_pool(toloka_client, project):
                             operator=CompareOperator.GT,
                             value=30),
     ])
+    pool = toloka_client.create_pool(pool)
     return pool
 
 
@@ -111,7 +112,4 @@ if __name__ == '__main__':
     project = create_project()
     project = toloka_client.create_project(project)
 
-    pool = create_pool(toloka_client, project)
-    pool = toloka_client.create_pool(pool)
-
-    print(f'Toloka project: {project.id}, pool: {pool.id}')
+    print(f'Toloka project: {project.id}')

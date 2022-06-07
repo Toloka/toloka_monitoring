@@ -15,10 +15,10 @@
       </div>
         <div id="templates" >
             <div  id="statusLineTemplate" class="statusLine">
-                <canvas id="f1_score_chart" width="400" height="400"></canvas>
+                {% if metrics %}
+
+                <canvas id="f1_score_chart" width="300" height="200"></canvas>
                 <script>
-                const DATA_COUNT = 7;
-                const NUMBER_CFG = {count: DATA_COUNT, min: -100, max: 100};
 
                 let labels = {{ metrics['time_created_str']|tojson }};
 
@@ -37,10 +37,15 @@
                   type: 'line',
                   data: data,
                     options: {
+                      layout: {
+                            padding: 20
+                        },
                         scales: {
-                            x: [{
-                                type: 'timeseries',
-                            }],
+
+                            y: {
+                                min: 0,
+                                max: 1.2,
+                            },
                         }
                     },
                     responsive: true,
@@ -55,6 +60,10 @@
                 const ctx = document.getElementById('f1_score_chart').getContext('2d');
                 const myChart = new Chart(ctx, config);
                 </script>
+                {% else %}
+                    <h3>No metrics in database<br/>
+                        Run monitoring script to see a cool plot.</h3>
+                {% endif %}
             </div>
         </div>
     </div>

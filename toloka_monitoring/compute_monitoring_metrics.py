@@ -4,14 +4,14 @@ import datetime
 
 import numpy as np
 
-from crowdkit.aggregation import DawidSkene
+from crowdkit.aggregation import MajorityVote
 from sklearn.metrics import confusion_matrix
 
 import toloka.client as toloka
 from toloka_monitoring.api.db import init_db, db_session_factory
 from toloka_monitoring.api.models import Prediction, PredictionLabel, MonitoringCounts
-from toloka_monitoring.config import SQLALCHEMY_DATABASE_URI, TOLOKA_API_TOKEN, TOLOKA_POOL_ID
-
+from toloka_monitoring.config import SQLALCHEMY_DATABASE_URI, TOLOKA_API_TOKEN, TOLOKA_PROJECT_ID
+from toloka_monitoring.setup_toloka_project import create_pool
 
 def get_predictions_for_labelling(session, limit=10):
     query = session.query(Prediction).join(PredictionLabel, isouter=True)\
@@ -56,9 +56,9 @@ def annotate_with_toloka(predictions, toloka_client, toloka_pool_id):
     answers_df = answers_df.rename(columns={
         'INPUT:pred_id': 'task',
         'OUTPUT:label': 'label',
-        'ASSIGNMENT:worker_id': 'performer',
+        'ASSIGNMENT:worker_id': 'worker',
     })
-    aggregated_answers = DawidSkene(n_iter=100).fit_predict(answers_df)
+    aggregated_answers = MajorityVote().fit_predict(answers_df)
     return aggregated_answers.to_dict()
 
 
@@ -102,10 +102,11 @@ def compute_monitoring_metrics():
     init_db(db_uri)
     session = db_session_factory()
     toloka_client = toloka.TolokaClient(TOLOKA_API_TOKEN, 'PRODUCTION')
-    toloka_pool_id = TOLOKA_POOL_ID
+    project = toloka_client.get_project(TOLOKA_PROJECT_ID)
+    pool = create_pool(toloka_client, project.id)
     predictions = get_predictions_for_labelling(session)
     print(f'Annotating {len(predictions)} predictions with Toloka')
-    crowd_annotations = get_prediction_crowd_annotations(predictions, toloka_client, toloka_pool_id)
+    crowd_annotations = get_prediction_crowd_annotations(predictions, toloka_client, pool.id)
     for prediction_crowd_annotation in crowd_annotations:
         session.add(prediction_crowd_annotation)
 
